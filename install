@@ -1,0 +1,33 @@
+#!/bin/bash
+
+arch=$(uname -p)
+echo -n "Nom de l'image : "
+read image
+
+case $arch in
+  ppc64le)
+    clear
+    echo "Compilation sur architecture $arch"
+    rm -rf Build
+    echo "Construction du conteneur de compilation"
+    docker image build -f Dockerfile.ppc64le -t temp/gitea .
+    git clone https://github.com/go-gitea/gitea Build
+    echo "Compilation de Gitea"
+    docker container run -it --rm -v $(pwd)/Build:/app --name compil --privileged temp/gitea make
+    cp Build/gitea Files/usr/local/bin/
+    rm -rf Build
+    docker image build -f Dockerfile-prod.ppc64le  -t $image .
+    ;;
+
+  x86_64)
+    docker image build -f Dockerfile.amd64  -t $image .
+    ;;
+
+  *)
+    echo "Votre architecture ($arch) n'est pas supportée" !
+    exit 1
+    ;;
+esac
+
+echo "Image $image Ok"
+exit 0

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for FOLDER in /data/gitea/conf /data/gitea/log /data/git /data/ssh; do
+    mkdir -p ${FOLDER}
+done
+
+exec /bin/s6-svscan /etc/s6
