@@ -12,8 +12,11 @@ case $arch in
     echo "Construction du conteneur de compilation"
     docker image build -f Dockerfile.ppc64le -t temp/gitea .
     git clone https://github.com/go-gitea/gitea Build
+    echo '#!/bin/sh' > Build/makeit
+    echo 'TAGS="bindata" make build' >> Build/makeit
+    chmod a+x Build/makeit 
     echo "Compilation de Gitea"
-    docker container run -it --rm -v $(pwd)/Build:/app --name compil --privileged temp/gitea make
+    docker container run -it --rm -v $(pwd)/Build:/app --name compil --privileged temp/gitea /app/makeit
     cp Build/gitea Files/usr/local/bin/
     rm -rf Build
     docker image build -f Dockerfile-prod.ppc64le  -t $image .
