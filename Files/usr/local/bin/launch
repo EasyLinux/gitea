@@ -1,7 +1,10 @@
 #!/bin/bash
 
-for FOLDER in /data/gitea/conf /data/gitea/log /data/git /data/ssh; do
-    mkdir -p ${FOLDER}
-done
+if [ !-d /data/gitea/conf ]; then 
+  #Premier lancement le Volume est vide, il faut créer l'arborescence
+  for FOLDER in /data/gitea/conf /data/gitea/log /data/git /data/ssh; do
+      mkdir -p ${FOLDER}
+  done
+fi
 
 exec /bin/s6-svscan /etc/s6

@@ -1,7 +1,0 @@
-# Conteneur temporaire de compilation ppc64le
-FROM alpine:3.12
-LABEL author="Serge NOEL <serge.noel@easylinux.fr>"
-
-RUN apk add git go npm nodejs build-base
-RUN mkdir /app
-WORKDIR /app
